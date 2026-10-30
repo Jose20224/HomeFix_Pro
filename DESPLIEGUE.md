@@ -24,12 +24,15 @@ Supabase Free incluye actualmente 500 MB de PostgreSQL y 1 GB de Storage, sufici
    ```text
    DATABASE_URL=postgresql://...supabase.co:5432/postgres?sslmode=require
    ADMIN_PASSWORD=una-clave-segura
+   DEMO_PASSWORD=
    CORS_ORIGIN=https://ejemplo-temporal.invalid
    SUPABASE_URL=https://TU-PROJECT-REF.supabase.co
    SUPABASE_SERVICE_ROLE_KEY=tu-service-role-key
    ```
 
-4. Crea el servicio. El arranque ejecuta `prisma db push`, prepara categorías y el administrador, y luego inicia la API. Esto no borra datos; la semilla hace operaciones idempotentes.
+4. Crea el servicio. El arranque ejecuta `prisma db push`, la semilla y luego inicia la API. La semilla solo crea lo que no existe (categorías, administrador y cuentas demo); nunca cambia la contraseña, el rol ni el estado de una cuenta existente.
+   - `ADMIN_PASSWORD` (8 a 72 bytes) solo se usa para crear el administrador por primera vez. Cambiar esta variable después no cambia su contraseña.
+   - `DEMO_PASSWORD` es opcional. Si está vacía no se crean cuentas demo; si tiene de 8 a 72 bytes se crean `maria@ejemplo.com` y `juan@tech.com`, cuando no existen.
 5. Prueba `https://TU-API.onrender.com/api/health` y `https://TU-API.onrender.com/api-docs`.
 
 ## 3. Frontend gratuito en Vercel

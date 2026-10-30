@@ -30,10 +30,23 @@ Supabase Free incluye actualmente 500 MB de PostgreSQL y 1 GB de Storage, sufici
    SUPABASE_SERVICE_ROLE_KEY=tu-service-role-key
    ```
 
-4. Crea el servicio. El arranque ejecuta `prisma db push`, la semilla y luego inicia la API. La semilla solo crea lo que no existe (categorías, administrador y cuentas demo); nunca cambia la contraseña, el rol ni el estado de una cuenta existente.
+4. Crea el servicio. El arranque ejecuta `prisma migrate deploy`, la semilla y luego inicia la API. La semilla solo crea lo que no existe (categorías, administrador y cuentas demo); nunca cambia la contraseña, el rol ni el estado de una cuenta existente.
    - `ADMIN_PASSWORD` (8 a 72 bytes) solo se usa para crear el administrador por primera vez. Cambiar esta variable después no cambia su contraseña.
    - `DEMO_PASSWORD` es opcional. Si está vacía no se crean cuentas demo; si tiene de 8 a 72 bytes se crean `maria@ejemplo.com` y `juan@tech.com`, cuando no existen.
 5. Prueba `https://TU-API.onrender.com/api/health` y `https://TU-API.onrender.com/api-docs`.
+
+### Migraciones de la base
+
+Los cambios de esquema se versionan en `backend/prisma/migrations`. Una base nueva aplica `0_init` en el primer arranque.
+
+Una base que ya existía, creada con `prisma db push`, debe marcar la baseline como aplicada **una sola vez y antes de desplegar**. De lo contrario, `prisma migrate deploy` falla porque la base no está vacía, y la API no inicia. Desde `backend`, con `DATABASE_URL` apuntando a esa base:
+
+```powershell
+npx prisma migrate diff --from-url "$env:DATABASE_URL" --to-schema-datamodel prisma/schema.prisma --exit-code
+npx prisma migrate resolve --applied 0_init
+```
+
+El primer comando solo compara y no modifica nada; si informa diferencias, resuélvelas antes de continuar.
 
 ## 3. Frontend gratuito en Vercel
 
@@ -64,4 +77,4 @@ Captura y anexa:
 
 - Render Free duerme tras 15 minutos y no ofrece disco persistente; por eso la aplicación no usa SQLite ni archivos locales en producción.
 - El uso gratuito de Vercel es para proyectos personales/académicos.
-- Para un producto comercial se migraría a un plan con disponibilidad garantizada, migraciones versionadas de PostgreSQL y monitoreo.
+- Para un producto comercial se migraría a un plan con disponibilidad garantizada y monitoreo.

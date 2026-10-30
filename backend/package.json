@@ -4,7 +4,7 @@
     "main":  "index.js",
     "scripts":  {
                     "start":  "node src/server.js",
-                    "start:production":  "prisma db push && node prisma/seed.js && node src/server.js",
+                    "start:production":  "prisma migrate deploy && node prisma/seed.js && node src/server.js",
                     "dev":  "node --watch src/server.js",
                     "test":  "node --test test/*.test.js",
                     "db:generate":  "prisma generate",

@@ -106,8 +106,8 @@ function App() {
 
             <Route path="/dashboard/empresa" element={<ProtectedRoute allowedRoles={['EMPRESA']}><DashboardLayout /></ProtectedRoute>}>
               <Route index element={<CompanyDashboard />} />
-              <Route path="despacho" element={<CompanyDashboard />} />
-              <Route path="empleados" element={<CompanyDashboard />} />
+              <Route path="despacho" element={<CompanyDashboard section="despacho" />} />
+              <Route path="empleados" element={<CompanyDashboard section="empleados" />} />
             </Route>
             <Route path="/ajustes" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
             <Route path="/agenda" element={<ProtectedRoute allowedRoles={['CLIENTE', 'TECNICO']}><SchedulePage /></ProtectedRoute>} />

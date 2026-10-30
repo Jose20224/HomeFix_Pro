@@ -14,7 +14,7 @@ export default function TechReviewsPage() {
     {loading ? <p>Cargando reseñas…</p> : <><div className="bg-white p-6 rounded-xl border"><StarRating value={average} readOnly /><p>{reviews.length} reseñas</p></div>
       {!reviews.length && !error && <p>Todavía no has recibido reseñas.</p>}
       {reviews.map(review => <article key={review.id} className="bg-white rounded-xl border p-6">
-        <h2 className="font-semibold">{review.client.fullName}</h2><StarRating value={review.rating} readOnly />
+        <h2 className="font-semibold">{review.clientName}</h2><StarRating value={review.rating} readOnly />
         <p className="text-sm text-slate-500">{new Date(review.createdAt).toLocaleDateString('es-NI')} · {review.request.category.name}</p>
         <p className="mt-3 whitespace-pre-wrap">{review.comment || 'Sin comentario'}</p>
       </article>)}</>}

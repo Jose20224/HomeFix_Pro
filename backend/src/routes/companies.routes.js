@@ -32,8 +32,8 @@ router.post('/mine/employees', async (req, res) => {
   const role = optionalText(req.body?.role, 'Cargo', 150);
   const employee = await prisma.$transaction(async (tx) => {
     const company = await mine(tx, req.user.id);
-    const technician = await tx.user.findUnique({ where: { email } });
-    if (!technician || technician.role !== 'TECNICO' || !technician.isActive) fail(400, 'Se requiere un técnico activo registrado');
+    const technician = await tx.user.findUnique({ where: { email }, include: { companyEmployment: true } });
+    if (!technician || technician.role !== 'TECNICO' || !technician.isActive || technician.companyEmployment) fail(400, 'No se pudo agregar al técnico. Verifica el correo e inténtalo de nuevo');
     return tx.companyEmployee.create({ data: { companyId: company.id, userId: technician.id, role }, include: { user: { select: person } } });
   });
   res.status(201).json(employee);

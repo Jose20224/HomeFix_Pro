@@ -22,12 +22,13 @@ router.post('/', auth, roleGuard('CLIENTE'), async (req, res) => {
   res.status(201).json(review);
 });
 router.get('/technician/:id', async (req, res) => {
-  res.json(await prisma.review.findMany({
+  const reviews = await prisma.review.findMany({
     where: { technicianId: id(req.params.id) },
     select: { id: true, rating: true, comment: true, createdAt: true,
-      client: { select: { fullName: true, avatarUrl: true } },
+      client: { select: { fullName: true } },
       request: { select: { category: { select: { name: true, icon: true } } } },
     }, orderBy: { createdAt: 'desc' },
-  }));
+  });
+  res.json(reviews.map(({ client, ...review }) => ({ ...review, clientName: client.fullName.trim().split(/\s+/)[0] })));
 });
 module.exports = router;

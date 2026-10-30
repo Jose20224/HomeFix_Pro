@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/auth';
-import { authApi } from '../../services/api';
+import { authApi, categoriesApi, specialtyCode } from '../../services/api';
 import './SettingsPage.css';
 
 const dashboardPaths = { CLIENTE: '/dashboard/cliente', TECNICO: '/dashboard/tecnico', EMPRESA: '/dashboard/empresa', ADMIN: '/dashboard/admin' };
 const roleNames = { CLIENTE: 'Cliente', TECNICO: 'Técnico', EMPRESA: 'Empresa', ADMIN: 'Administrador' };
-const profileValues = user => ({ fullName: user.fullName || '', phone: user.phone || '', address: user.address || '' });
+const profileValues = user => ({ fullName: user.fullName || '', phone: user.phone || '', address: user.address || '', ...(user.role === 'TECNICO' ? { specialty: user.techProfile?.specialty || '', bio: user.techProfile?.bio || '' } : {}) });
 const cleanValues = form => Object.fromEntries(Object.entries(form).map(([key, value]) => [key, value.trim()]));
 
 function Icon({ name, className = '' }) {
@@ -35,6 +35,8 @@ export default function SettingsPage() {
   const [feedback, setFeedback] = useState(null);
   const [busy, setBusy] = useState(false);
   const [activeSection, setActiveSection] = useState('personal');
+  const [categories, setCategories] = useState([]);
+  useEffect(() => { if (user.role === 'TECNICO') categoriesApi.list().then(setCategories).catch(error => setFeedback({ type: 'error', message: error.message })); }, [user.role]);
   const homePath = dashboardPaths[user.role] || '/login';
   const role = roleNames[user.role] || 'Usuario';
   const initials = user.fullName.trim().split(/\s+/).filter(Boolean).slice(0, 2).map(name => name[0]).join('').toUpperCase() || 'HF';
@@ -121,6 +123,14 @@ export default function SettingsPage() {
                 <div className="settings-field settings-field-wide"><label htmlFor="settings-address">Dirección <span className="settings-optional">Opcional</span></label><div className="settings-input-wrap settings-textarea-wrap"><Icon name="location" /><textarea id="settings-address" name="address" autoComplete="street-address" rows={2} maxLength={500} disabled={busy} value={form.address} onChange={event => change('address', event.target.value)} placeholder="Barrio, calle y una referencia de tu ubicación" /></div></div>
               </div>
             </section>
+
+            {user.role === 'TECNICO' && <section id="profesional" className="settings-form-section">
+              <div className="settings-section-heading"><span className="settings-section-icon"><Icon name="shield" /></span><div><h2>Perfil profesional</h2><p>Los clientes lo ven al buscar técnicos.</p></div></div>
+              <div className="settings-fields">
+                <div className="settings-field settings-field-wide"><label htmlFor="settings-specialty">Especialidad</label><div className="settings-input-wrap"><Icon name="spark" /><select id="settings-specialty" name="specialty" disabled={busy || !categories.length} value={form.specialty} onChange={event => change('specialty', event.target.value)}>{categories.map(category => <option key={category.id} value={specialtyCode(category.name)}>{category.name}</option>)}</select></div></div>
+                <div className="settings-field settings-field-wide"><label htmlFor="settings-bio">Biografía <span className="settings-optional">Opcional</span></label><div className="settings-input-wrap settings-textarea-wrap"><Icon name="person" /><textarea id="settings-bio" name="bio" rows={3} maxLength={1000} disabled={busy} value={form.bio} onChange={event => change('bio', event.target.value)} placeholder="Tu experiencia y los trabajos que realizas" /></div></div>
+              </div>
+            </section>}
 
             <div className="settings-feedback-region" aria-live="polite">
               {feedback && <div className={'settings-feedback settings-feedback-' + feedback.type} role={feedback.type === 'error' ? 'alert' : 'status'}><Icon name={feedback.type === 'error' ? 'info' : 'check'} /><span>{feedback.message}</span></div>}

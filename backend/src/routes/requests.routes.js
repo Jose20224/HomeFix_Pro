@@ -30,7 +30,7 @@ router.get('/all', roleGuard('ADMIN'), async (req, res) => {
 router.get('/available', roleGuard('TECNICO', 'EMPRESA'), async (req, res) => {
   const where = { status: 'SOLICITADO', technicianId: null };
   if (req.query.category) where.categoryId = id(req.query.category);
-  if (req.query.neighborhood) where.neighborhood = { contains: text(req.query.neighborhood, 'Barrio', 150) };
+  if (req.query.neighborhood) where.neighborhood = { contains: text(req.query.neighborhood, 'Barrio', 150), mode: 'insensitive' };
   const requests = await prisma.serviceRequest.findMany({
     where, select: { id: true, title: true, description: true, neighborhood: true, urgency: true, createdAt: true, category: true },
     orderBy: { createdAt: 'asc' },

@@ -16,7 +16,7 @@ const add = (url, method, summary, body, secured = true) => {
 add('/api/auth/register', 'post', 'Registrar cliente, técnico o empresa', object({ email: string, password: { type: 'string', minLength: 8 }, fullName: string, role: { type: 'string', enum: ['CLIENTE', 'TECNICO', 'EMPRESA'] } }), false);
 add('/api/auth/login', 'post', 'Iniciar sesión', object({ email: string, password: string }), false);
 add('/api/auth/me', 'get', 'Perfil actual');
-add('/api/auth/me', 'put', 'Actualizar perfil', object({ fullName: string, phone: string, address: string }));
+add('/api/auth/me', 'put', 'Actualizar perfil; specialty y bio solo para técnicos', object({ fullName: string, phone: string, address: string, specialty: { type: 'string', description: 'Código de una categoría, por ejemplo PLOMERIA' }, bio: { type: 'string', maxLength: 1000 } }));
 add('/api/services/categories', 'get', 'Categorías', null, false);
 add('/api/services/categories', 'post', 'Crear categoría (administrador)', object({ name: string, icon: string, description: string }));
 add('/api/services/categories/{id}', 'put', 'Actualizar categoría (administrador)', object({ name: string, icon: string, description: string }));

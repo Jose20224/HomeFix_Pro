@@ -8,7 +8,7 @@ router.get('/categories', async (req, res) => res.json(await prisma.serviceCateg
 router.get('/technicians', auth, async (req, res) => {
   const where = { role: 'TECNICO', isActive: true, techProfile: { verificationStatus: 'VERIFICADO' } };
   if (req.query.category) where.techProfile.specialty = text(req.query.category, 'Categoría', 80).toUpperCase();
-  if (req.query.location) where.address = { contains: text(req.query.location, 'Ubicación', 150) };
+  if (req.query.location) where.address = { contains: text(req.query.location, 'Ubicación', 150), mode: 'insensitive' };
   res.json(await prisma.user.findMany({ where,
     select: { id: true, fullName: true, avatarUrl: true, address: true, techProfile: { select: publicProfile } }, orderBy: { fullName: 'asc' } }));
 });

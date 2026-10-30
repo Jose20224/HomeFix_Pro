@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
     if (!['CLIENTE', 'TECNICO', 'EMPRESA', 'ADMIN'].includes(req.query.role)) fail(400, 'Rol inválido');
     where.role = req.query.role;
   }
-  if (req.query.search) { const search = text(req.query.search, 'Búsqueda', 150); where.OR = [{ fullName: { contains: search } }, { email: { contains: search } }]; }
+  if (req.query.search) { const search = text(req.query.search, 'Búsqueda', 150); where.OR = [{ fullName: { contains: search, mode: 'insensitive' } }, { email: { contains: search, mode: 'insensitive' } }]; }
   res.json(await prisma.user.findMany({ where, select, orderBy: { createdAt: 'desc' } }));
 });
 router.get('/companies/pending', async (req, res) => {

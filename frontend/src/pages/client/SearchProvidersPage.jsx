@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/auth';
-import { providersApi, categoriesApi } from '../../services/api';
+import { providersApi, categoriesApi, specialtyCode } from '../../services/api';
 import Sidebar from '../../components/layout/Sidebar';
 import TopBar from '../../components/layout/TopBar';
 import Card from '../../components/ui/Card';
@@ -27,7 +27,7 @@ export default function SearchProvidersPage() {
   return <div className="min-h-screen bg-background"><Sidebar /><div className="md:ml-64"><TopBar userName={user.fullName} /><main className="p-lg max-w-6xl mx-auto">
     <h2 className="text-2xl font-bold mb-4">Técnicos verificados</h2>
     <div className="grid gap-3 md:grid-cols-3 mb-4"><input aria-label="Buscar técnicos" placeholder="Nombre o especialidad" className="border rounded-lg p-3" value={search} onChange={e => setSearch(e.target.value)} />
-      <select aria-label="Filtrar por categoría" className="border rounded-lg p-3" value={category} onChange={e => setCategory(e.target.value)}><option value="">Todas las categorías</option>{categories.map(item => <option key={item.id} value={item.name.normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').replaceAll(' ', '_').toUpperCase()}>{item.name}</option>)}</select>
+      <select aria-label="Filtrar por categoría" className="border rounded-lg p-3" value={category} onChange={e => setCategory(e.target.value)}><option value="">Todas las categorías</option>{categories.map(item => <option key={item.id} value={specialtyCode(item.name)}>{item.name}</option>)}</select>
       <input aria-label="Filtrar por ubicación" placeholder="Barrio, zona o ciudad" className="border rounded-lg p-3" value={location} onChange={e => setLocation(e.target.value)} /></div>
     {error && <p role="alert" className="text-red-700">{error}</p>}{loading && <p>Cargando técnicos…</p>}
     {!loading && !error && !filtered.length && <p>No hay técnicos que coincidan con la búsqueda.</p>}

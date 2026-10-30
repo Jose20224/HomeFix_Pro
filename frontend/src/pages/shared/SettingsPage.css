@@ -97,6 +97,7 @@
 .settings-input-wrap:focus-within { border-color: #78a899; box-shadow: 0 0 0 3px rgb(56 132 107 / 9%); }
 .settings-input-wrap input, .settings-input-wrap textarea { display: block; width: 100%; min-width: 0; padding: 12px 13px 12px 39px; border: none; outline: none; background: transparent; color: #435968; font-size: 12px; line-height: 1.5; border-radius: 9px; }
 .settings-input-wrap input { min-height: 44px; }
+.settings-input-wrap select { display: block; width: 100%; min-height: 44px; padding: 12px 13px 12px 39px; border: none; outline: none; background: transparent; color: #435968; font: inherit; font-size: 12px; border-radius: 9px; }
 .settings-input-wrap textarea { resize: vertical; min-height: 80px; max-height: 220px; }
 .settings-input-wrap input::placeholder, .settings-input-wrap textarea::placeholder { color: #a6b0b8; }
 .settings-input-wrap input:disabled, .settings-input-wrap textarea:disabled { opacity: .6; }

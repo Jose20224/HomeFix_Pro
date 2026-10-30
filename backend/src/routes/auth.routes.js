@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const prisma = require('../prisma');
 const auth = require('../middleware/auth');
-const { fail, text, optionalText } = require('../lib/policy');
+const { fail, text, optionalText, specialtyCode } = require('../lib/policy');
 const router = express.Router();
 const include = { techProfile: true, companyOwned: true };
 const safe = ({ passwordHash, ...user }) => user;
@@ -57,6 +57,20 @@ router.put('/me', auth, async (req, res) => {
   if (body.avatarUrl !== undefined) {
     if (body.avatarUrl && !/^https?:\/\//.test(body.avatarUrl)) fail(400, 'URL de avatar inválida');
     data.avatarUrl = optionalText(body.avatarUrl, 'Avatar', 1000) || null;
+  }
+  if (body.specialty !== undefined || body.bio !== undefined) {
+    if (req.user.role !== 'TECNICO') fail(403, 'Solo un técnico puede editar su especialidad y biografía');
+    const profile = {};
+    if (body.specialty !== undefined) {
+      profile.specialty = text(body.specialty, 'Especialidad', 80);
+      const current = await prisma.techProfile.findUnique({ where: { userId: req.user.id }, select: { specialty: true } });
+      if (profile.specialty !== current?.specialty) {
+        const categories = await prisma.serviceCategory.findMany({ select: { name: true } });
+        if (!categories.some(category => specialtyCode(category.name) === profile.specialty)) fail(400, 'Especialidad inválida');
+      }
+    }
+    if (body.bio !== undefined) profile.bio = optionalText(body.bio, 'Biografía', 1000) || null;
+    data.techProfile = { update: profile };
   }
   if (!Object.keys(data).length) fail(400, 'No hay cambios');
   const user = await prisma.user.update({ where: { id: req.user.id }, data, include });

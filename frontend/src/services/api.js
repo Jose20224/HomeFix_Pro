@@ -29,7 +29,6 @@ export const requestsApi = {
   myRequests: () => request('/requests/mine'),
   all: () => request('/requests/all'),
   available: (params = '') => request('/requests/available' + params),
-  getById: id => request('/requests/' + id),
   accept: id => write('/requests/' + id + '/accept', 'PUT'),
   updateStatus: (id, status) => write('/requests/' + id + '/status', 'PUT', { status }),
   cancel: id => write('/requests/' + id + '/cancel', 'PUT'),
@@ -66,7 +65,7 @@ export const verificationApi = {
 };
 export const adminApi = {
   createUser: data => write('/users', 'POST', data), updateUser: (id, data) => write('/users/' + id, 'PUT', data),
-  users: (params = '') => request('/users' + params), getUser: id => request('/users/' + id),
+  users: (params = '') => request('/users' + params),
   toggleUser: id => write('/users/' + id + '/toggle', 'PUT'),
   overview: () => request('/reports/overview'), byCategory: () => request('/reports/by-category'),
   byStatus: () => request('/reports/by-status'), trend: () => request('/reports/trend'),

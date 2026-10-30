@@ -11,7 +11,7 @@ const { fail } = require('./lib/policy');
 const { client: supabase, bucket } = require('./supabase');
 const app = express();
 if (process.env.NODE_ENV === 'production') app.set('trust proxy', 1);
-app.use(cors({ origin: (process.env.CORS_ORIGIN || 'http://localhost:5173').split(',').map(value => value.trim()), credentials: true }));
+app.use(cors({ origin: (process.env.CORS_ORIGIN || 'http://localhost:5173').split(',').map(value => value.trim()) }));
 app.use(helmet());
 app.use(express.json({ limit: '100kb' }));
 app.use(express.urlencoded({ extended: false, limit: '100kb' }));

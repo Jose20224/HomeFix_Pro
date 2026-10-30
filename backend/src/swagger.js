@@ -60,7 +60,7 @@ add('/api/companies/mine/employees/{id}', 'delete', 'Retirar empleado sin servic
 add('/api/companies/mine/jobs', 'get', 'Servicios asignados por mi empresa');
 add('/api/companies/mine/assign', 'post', 'Asignar servicio disponible a empleado verificado', object({ requestId: integer, technicianId: integer }));
 add('/api/companies/mine/jobs/{id}/status', 'put', 'Avanzar estado de servicio de mi empresa', object({ status: { type: 'string', enum: ['EN_PROGRESO', 'FINALIZADO'] } }));
-add('/api/health', 'get', 'Comprobar API y conexión a SQLite', null, false);
+add('/api/health', 'get', 'Comprobar API y conexión a PostgreSQL', null, false);
 module.exports = {
   openapi: '3.0.0', info: { title: 'HomeFix Pro API', version: '1.1.0' },
   servers: [{ url: process.env.PUBLIC_API_URL || '/' }],

@@ -25,3 +25,5 @@ services:
         sync: false
       - key: SUPABASE_KYC_BUCKET
         value: kyc-documents
+      - key: DEMO_VERIFICATION
+        value: true

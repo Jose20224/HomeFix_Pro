@@ -6,6 +6,7 @@ const upload = require('../middleware/upload');
 const { client: supabase, bucket } = require('../supabase');
 const { id, fail, optionalText } = require('../lib/policy');
 const router = express.Router();
+const demoVerification = process.env.DEMO_VERIFICATION === 'true';
 const include = { user: { select: { id: true, fullName: true, email: true, phone: true, isActive: true } } };
 router.post('/upload', auth, roleGuard('TECNICO'), upload.fields([{ name: 'cedula', maxCount: 1 }, { name: 'policeRecord', maxCount: 1 }]), async (req, res) => {
   const files = Object.values(req.files || {}).flat();
@@ -27,9 +28,9 @@ router.post('/upload', auth, roleGuard('TECNICO'), upload.fields([{ name: 'cedul
     await prisma.techProfile.update({ where: { userId: req.user.id }, data: {
       cedulaDocUrl: '/uploads/' + req.files.cedula[0].filename,
       policeRecordUrl: '/uploads/' + req.files.policeRecord[0].filename,
-      verificationStatus: 'PENDIENTE',
+      verificationStatus: demoVerification ? 'VERIFICADO' : 'PENDIENTE',
     } });
-    res.json({ message: 'Documentos enviados para revisión' });
+    res.json({ message: demoVerification ? 'Documentos aceptados. Perfil verificado para muestras.' : 'Documentos enviados para revisión' });
   } catch (error) { await upload.cleanup(files); throw error; }
 });
 router.get('/pending', auth, roleGuard('ADMIN'), async (req, res) => {

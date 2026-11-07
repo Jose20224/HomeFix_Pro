@@ -27,7 +27,10 @@ Supabase Free incluye actualmente 500 MB de PostgreSQL y 1 GB de Storage, sufici
    CORS_ORIGIN=https://ejemplo-temporal.invalid
    SUPABASE_URL=https://TU-PROJECT-REF.supabase.co
    SUPABASE_SERVICE_ROLE_KEY=tu-service-role-key
+   DEMO_VERIFICATION=true
    ```
+
+   `DEMO_VERIFICATION=true` es solo para la demostración: acepta archivos de muestra con tipo/extensión permitidos y marca al técnico como verificado automáticamente. Déjalo en `false` o elimínalo en un entorno real.
 
 4. Crea el servicio. El arranque ejecuta `prisma db push`, prepara categorías y el administrador, y luego inicia la API. Esto no borra datos; la semilla hace operaciones idempotentes.
 5. Prueba `https://TU-API.onrender.com/api/health` y `https://TU-API.onrender.com/api-docs`.
